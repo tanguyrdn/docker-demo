@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  webserver:
+    build: 
+      context: ./bin/webserver
+    container_name: 'tang-webserver'
+    restart: 'always'
+    ports:
+      - "80:80"
+      - "443:443"
+    links: 
+      - mysql
+    volumes: 
+      - ${DOCUMENT_ROOT-./www}:/var/www/html
+      - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
+      - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
+  mysql:
+    build: ./bin/mysql
+    container_name: 'tang-mysql'
+    restart: 'always'
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: dev
+      MYSQL_DATABASE: tang
+      MYSQL_USER: tanguy
+      MYSQL_PASSWORD: tanguy
+  
